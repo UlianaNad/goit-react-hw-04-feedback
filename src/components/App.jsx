@@ -1,62 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Statistics from './Statistics/Statistics';
 import Notification from './Notification/Notification';
 import { Feedback } from './Feedback/Feedback';
 import { StyledWrapper } from './App.styled';
-class App extends React.Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
-  handleFeedbackVote = feedbackValue => {
+
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [neutral, setNeutral] = useState(0)
+
+ const handleFeedbackVote = feedbackValue => {
     switch (feedbackValue) {
       case 'good':
-        this.setState(prevState => ({ good: prevState.good + 1 }));
+        setGood(prevState => prevState + 1 )
         break;
       case 'neutral':
-        this.setState(prevState => ({ neutral: prevState.neutral + 1 }));
+        setNeutral(prevState => prevState +1 )
         break;
       case 'bad':
-        this.setState(prevState => ({ bad: prevState.bad + 1 }));
+        setBad(prevState => prevState +1 )
         break;
       default:
-        // Handle default case if necessary
         break;
     }
   };
-  countTotalFeedback = () => {
-    const { good, bad, neutral } = this.state;
+ const countTotalFeedback = () => {
     return good + bad + neutral;
   };
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const total = this.countTotalFeedback();
+  const total = countTotalFeedback();
+
+ const countPositiveFeedbackPercentage = () => {
+    
     return Math.round((good / total) * 100);
   };
-  render() {
-    const total = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage();
+
     return (
       <StyledWrapper>
         <h1>Please leave a feedback</h1>
         <Feedback
-          options={Object.keys(this.state)}
-          handleFeedbackVote={this.handleFeedbackVote}
+          options={['good', 'bad', 'neutral']}
+          handleFeedbackVote={handleFeedbackVote}
         />
         {total === 0 ? (
           <Notification message="There is no feedback" />
         ) : (
           <Statistics
-            good={this.state.good}
-            neutral={this.state.neutral}
-            bad={this.state.bad}
+            good={good}
+            neutral={neutral}
+            bad={bad}
             total={total}
-            positivePercentage={positivePercentage}
+            positivePercentage={countPositiveFeedbackPercentage()}
           />
         )}
       </StyledWrapper>
     );
   }
-}
 export default App;
