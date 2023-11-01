@@ -5,33 +5,24 @@ import { Feedback } from './Feedback/Feedback';
 import { StyledWrapper } from './App.styled';
 
 export const App = () => {
-  const [good, setGood] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [neutral, setNeutral] = useState(0)
+  const [feedback, setFeedback] = useState({ good: 0, bad: 0, neutral: 0 });
 
- const handleFeedbackVote = feedbackValue => {
-    switch (feedbackValue) {
-      case 'good':
-        setGood(prevState => prevState + 1 )
-        break;
-      case 'neutral':
-        setNeutral(prevState => prevState +1 )
-        break;
-      case 'bad':
-        setBad(prevState => prevState +1 )
-        break;
-      default:
-        break;
-    }
+  const handleFeedbackVote = feedbackValue => {
+    setFeedback(prevFeedback => ({
+      ...prevFeedback,
+      [feedbackValue]: prevFeedback[feedbackValue] + 1,
+    }));
   };
+
  const countTotalFeedback = () => {
+  const { good, bad, neutral } = feedback;
     return good + bad + neutral;
   };
   const total = countTotalFeedback();
 
  const countPositiveFeedbackPercentage = () => {
     
-    return Math.round((good / total) * 100);
+    return Math.round((feedback.good / total) * 100);
   };
 
     return (
@@ -45,9 +36,9 @@ export const App = () => {
           <Notification message="There is no feedback" />
         ) : (
           <Statistics
-            good={good}
-            neutral={neutral}
-            bad={bad}
+            good={feedback.good}
+            neutral={feedback.neutral}
+            bad={feedback.bad}
             total={total}
             positivePercentage={countPositiveFeedbackPercentage()}
           />
